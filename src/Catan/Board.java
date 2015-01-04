@@ -49,6 +49,7 @@ public class Board {
         tilecoords.add(new Coordinate(4,3));
         tilecoords.add(new Coordinate(4,4));
         //fuck
+        //you
         
         //generates a tile for each tile coordinate
         for(Coordinate c : tilecoords){
