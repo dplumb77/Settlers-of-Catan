@@ -30,20 +30,18 @@ public class Player {
     private ArrayList<Resource> resourcehand = new ArrayList<>();
     
     
-    public Player(String s){
+    public Player(){
         smallsettlementcount = 0;
         largesettlementcount = 0;
         roadcount = 0;
         armycount = 0;
-        name = s;
         vpcards = 0;
         remaininglargesettlements = 5;
         remainingsmallsettlements = 5;
         remainingroads = 30;     
         victorypoints = 0;
         haslongestroad = false;
-        haslargestarmy = false;
-                
+        haslargestarmy = false;              
     }
 
     /*
@@ -64,6 +62,10 @@ public class Player {
     
     public String getName(){
         return name;
+    }
+    
+    public void setName(String s){
+        name = s;
     }
 
     /*
