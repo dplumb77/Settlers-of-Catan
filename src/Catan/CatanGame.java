@@ -67,21 +67,14 @@ public class CatanGame {
                 board.placeSettlement(cp,c);
             }
         }
-        cp.setWood(cp.getWood()-1);
-        cp.setSheep(cp.getSheep()-1);
-        cp.setWheat(cp.getWheat()-1);
-        cp.setBrick(cp.getBrick()-1);
-        cp.calculateScore();
-        
+        cp.makeSmallSettlement();       
     }
     
     public boolean buildLargeSettlement(Corner c){
         if(cp.canMakeLargeSettlement()==true){
             if(c.getSettlement()==Settlement.SMALL && c.getOwner() == cp){
                 board.placeSettlement(cp,c);
-                cp.setRocks(cp.getRocks()-3);
-                cp.setWheat(cp.getWheat()-2);
-                cp.calculateScore();
+                cp.makeLargeSettlement();
                 return true;
             }
             else return false;
@@ -92,10 +85,8 @@ public class CatanGame {
     public void buildRoad(Edge e){
         if(cp.canMakeRoad()==true){
             board.placeRoad(cp,e);
-            cp.setBrick(cp.getBrick()-1);
-            cp.setWood(cp.getWood()-1);
+            cp.makeRoad();
             board.calculateLongestRoad();
-            cp.calculateScore();
         }
     }
     
