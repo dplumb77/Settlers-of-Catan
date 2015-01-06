@@ -2,6 +2,9 @@ package Catan;
 /**
  *
  * @author Elliot
+ * 
+ * 
+ * THIS IS TEST HEHE
  */
 public class die {
     
