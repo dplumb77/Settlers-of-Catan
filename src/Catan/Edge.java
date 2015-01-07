@@ -25,7 +25,23 @@ public class Edge {
         return connectingcorners;
     }
     
-    public void setRoad(Player p){
+    //used for removing duplicate edges during edge initialization
+    public boolean sharesCorners(Edge e){
+        ArrayList<Corner> coordlist = e.getConnectingCorners();
+        if(connectingcorners.contains(coordlist.get(0))&& connectingcorners.contains(coordlist.get(1))) return true;
+        return false;
+    }
+
+    public boolean canPlaceRoad(Player p){
+        for(Corner c: connectingcorners){
+            if(c.getOwner()==p) return true;
+            for(Edge e: c.getRoads()){
+                if(e.getOwner()==p) return true;
+            }
+        }
+        return false;
+    }
+    public void placeRoad(Player p){
         hasroad = true;
         owner = p;
     }

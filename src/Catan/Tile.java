@@ -1,7 +1,6 @@
 
 package Catan;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Tile {
@@ -11,98 +10,79 @@ public class Tile {
     private int token;
     private boolean robber;
     private Coordinate coords;
-    private ArrayList<Coordinate> adjacentcornercoords = new ArrayList<>();
-    private ArrayList<Coordinate> adjacenttilecoords = new ArrayList<>();
     private List<Tile> adjacenttiles = new ArrayList<>();
     private List<Corner> adjacentcorners = new ArrayList<>();
+    private List<Coordinate> adjacentcornercoords = new ArrayList<>();
     
-    public Tile(Coordinate coordinates, ArrayList<Coordinate> validtiles){
+    public Tile(Coordinate coordinates){
         x = coordinates.getx();
         y = coordinates.gety();
         coords = coordinates;
         robber = false;
+              
+        //still needed to generate corner objects
+        int i = ((y+2)*2)-x;
+        adjacentcornercoords.add(new Coordinate(x,i));
+        adjacentcornercoords.add(new Coordinate(x,i-1));
+        adjacentcornercoords.add(new Coordinate(x,i-2));
+        adjacentcornercoords.add(new Coordinate(x+1,i));
+        adjacentcornercoords.add(new Coordinate(x+1,i-1));
+        adjacentcornercoords.add(new Coordinate(x+1,i-2)) ;           
         
-        int n;
-        int m;
-        int i;
-        
-        //generates list of adjacent tile coordinates
-        for(n=0;n<3;n++){
-            for(m=0;m<3;m++){
-                if(!((n==0&&m==2)||(n==2&&m==0))){
-                    adjacenttilecoords.add(new Coordinate(x-1+m, y-1+n));
-                }
-            }
-        }
+    }
 
-        Iterator<Coordinate> iter = adjacenttilecoords.iterator();
-        while (iter.hasNext()) {
-          Coordinate c = iter.next();
-          if(validtiles.contains(c)==false)
-            iter.remove();
+    /*
+        Adjacent stuff methods:
+            void fillAdjacents(ArrayList<Tile> tilelist, ArrayList<Corner> cornerlist)
+                -fills adjacent tiles/corners lists with tile/corner objects
+                -maybe needs edges
+            - getters for each list
+    */
+    
+    public void fillAdjacents(ArrayList<Tile> tilelist, ArrayList<Corner> cornerlist){
+        //adjacent tiles
+        Coordinate tmpcoord;
+        for(Tile t: tilelist){
+            tmpcoord = t.getCoords();
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==y-1) adjacenttiles.add(t);
+            if(tmpcoord.getx()==(x-1)&&tmpcoord.gety()==y) adjacenttiles.add(t);
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==y+1) adjacenttiles.add(t);            
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==y+1) adjacenttiles.add(t);           
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==y) adjacenttiles.add(t);                       
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==y-1) adjacenttiles.add(t);            
         }
         
         //adjacent corners
-        i = ((y+2)*2)-x; // makes sense
-        for(n=0;n<2;n++){
-            for(m=0;m<3;m++){
-                adjacentcornercoords.add(new Coordinate(x+n,i-m));
-            }
+        int i = ((y+2)*2)-x;
+        for(Corner c: cornerlist){
+            tmpcoord = c.getCoords();
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==i) adjacentcorners.add(c);
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==(i-1)) adjacentcorners.add(c);
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==(i-2)) adjacentcorners.add(c);            
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==i) adjacentcorners.add(c);           
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==(i-1)) adjacentcorners.add(c);                       
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==(i-2)) adjacentcorners.add(c); 
         }
     }
     
-    public void filladjacents(ArrayList<Tile> tilelist, ArrayList<Corner> cornerlist){
-        for(Tile t : tilelist){
-            if(adjacenttilecoords.contains(t.getCoords())==true) adjacenttiles.add(t);
-        }
-        for(Corner c : cornerlist){
-            if(adjacentcornercoords.contains(c.getCoords())==true) adjacentcorners.add(c);
-        }
+    public List<Corner> getAdjacentCorners(){
+        return adjacentcorners;
     }
     
-    public void setResource(Resource r){
-        resource = r;
+    public List<Tile> getAdjacentTiles(){
+        return adjacenttiles;
     }
     
-    public void setToken(int i){
-        token = i;
-    }
-    
-    public void setRobber(boolean b){
-        robber = b;
-    }
-    
-    public void setCoords(Coordinate c){
-        coords = c;
-    }
-    
-    public ArrayList<Coordinate> getAdjacentCorners(){
+    public List<Coordinate> getAdjacentCornerCoords(){
         return adjacentcornercoords;
-    }
-    
-    public ArrayList<Coordinate> getAdjacenttiles(){
-        return adjacenttilecoords;
-    }
-    
-    public Coordinate getCoords(){
-        return coords;
-    }
-    
-    public boolean getRobber(){
-        return robber;
-    }
-    
-    public int getToken(){
-        return token;
-    }
-    
-    public Resource getResource(){
-        return resource;
-    }
-    
-    public ArrayList<Coordinate> getadjacentcornercoords(){
-        return adjacentcornercoords;
-    }
+    }    
+
+    /*
+        payout method
+            void payout()
+                -distrubutes resources to adjacent settlements
+                -only called from Board class' tile payout method
+    */
     
     public void payout(){
         if(robber==false){
@@ -117,11 +97,31 @@ public class Tile {
         }
     }
     
-    public List<Corner> getAdjacentcorners() {
-        return adjacentcorners;
+    public void setResource(Resource r){
+        resource = r;
     }
     
+    public void setToken(int i){
+        token = i;
+    }
     
+    public Coordinate getCoords(){
+        return coords;
+    }
    
+    public boolean getRobber(){
+        return robber;
+    }
     
+    public void setRobber(boolean b){
+        robber = b;
+    }
+    
+    public int getToken(){
+        return token;
+    }
+    
+    public Resource getResource(){
+        return resource;
+    }    
 }

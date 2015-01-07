@@ -7,11 +7,11 @@ package Catan;
 
 
 public enum Resource {
-    BRICK, DESERT, ROCK, SHEEP, WHEAT, WOOD;
+    CLAY, DESERT, ROCK, SHEEP, WHEAT, WOOD;
     
     public String toString() {
         switch(this) {
-            case BRICK : return "brick";
+            case CLAY : return "brick";
                 case DESERT : return "desert";
                     case ROCK : return "rock";
                         case SHEEP : return "sheep";
