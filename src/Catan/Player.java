@@ -143,10 +143,10 @@ public class Player {
         return i;
     }
     
-    public int getBrick(){
+    public int getClay(){
         int i = 0;
         for(Resource r : resourcehand){
-            if(r==Resource.BRICK) i++;
+            if(r==Resource.CLAY) i++;
         }
         return i;
     }
@@ -176,7 +176,7 @@ public class Player {
         remainingsmallsettlements -= 1;
         this.removeResource(Resource.SHEEP, 1);
         this.removeResource(Resource.WHEAT, 1);
-        this.removeResource(Resource.BRICK, 1);
+        this.removeResource(Resource.CLAY, 1);
         this.removeResource(Resource.WOOD, 1);
     }
     
@@ -198,7 +198,7 @@ public class Player {
     }    
     
     public boolean canMakeSmallSettlement(){
-        if(this.getBrick()>0 && this.getWood()>0 && this.getSheep()>0 && this.getWheat()>0 && remainingsmallsettlements >0) return true;
+        if(this.getClay()>0 && this.getWood()>0 && this.getSheep()>0 && this.getWheat()>0 && remainingsmallsettlements >0) return true;
         return false;
     }
     
@@ -224,11 +224,11 @@ public class Player {
     public void makeRoad(){
         remainingroads--;
         this.removeResource(Resource.WOOD, 1);
-        this.removeResource(Resource.BRICK, 1);
+        this.removeResource(Resource.CLAY, 1);
     }
     
     public boolean canMakeRoad(){
-        if(this.getWood()>0 && this.getBrick()>0 && remainingroads >0) return true;
+        if(this.getWood()>0 && this.getClay()>0 && remainingroads >0) return true;
         return false;
     }
 

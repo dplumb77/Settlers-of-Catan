@@ -29,55 +29,53 @@ public class Corner {
         coords = coordinates;
         x = coords.getx();
         y = coords.gety();
-        int i;
-        
-        //adjacent corner coordinates
-        adjacentcornercoords.add(new Coordinate(x,y+1));
-        adjacentcornercoords.add(new Coordinate(x,y-1));
-        if((x%2)==(y%2)){
-            adjacentcornercoords.add(new Coordinate(x+1,y));
-        }
-        else{
-            adjacentcornercoords.add(new Coordinate(x-1,y));
-        }
-        
-        //removes coordinates that dont correspond to valid corners
-        Iterator<Coordinate> iter = adjacentcornercoords.iterator();
-        while (iter.hasNext()) {
-          Coordinate c = iter.next();
-          if(validcorners.contains(c)==false)
-            iter.remove();
-        }
-        
-        //adjacent tiles
-        if(y%2 == x%2){
-            i = ((x+y)/2)-2;
-            adjacenttilecoords.add(new Coordinate(x-1,i));
-            adjacenttilecoords.add(new Coordinate(x,i));
-            adjacenttilecoords.add(new Coordinate(x,i+1));
-        }
-        else{
-           i = ((x+y)/2)-1;
-            adjacenttilecoords.add(new Coordinate(x,i));
-            adjacenttilecoords.add(new Coordinate(x-1,i));
-            adjacenttilecoords.add(new Coordinate(x-1,i-1));
-        }  
-
-        iter = adjacenttilecoords.iterator();
-        while (iter.hasNext()) {
-          Coordinate c = iter.next();
-          if(validtiles.contains(c)==false)
-            iter.remove();
-        }
+        settlement = Settlement.NONE;
     }
     
     public void filladjacents(ArrayList<Tile> tilelist, ArrayList<Corner> cornerlist){
-        for(Tile t : tilelist){
-            if(adjacenttilecoords.contains(t.getCoords())==true) adjacenttiles.add(t);
+        //adjacent tiles
+        Coordinate tmpcoord;
+        for(Tile t: tilelist){
+            tmpcoord = t.getCoords();
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==y+1) adjacenttiles.add(t);
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==y-1) adjacenttiles.add(t);
+            if(x%2==y%2){
+                if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==y) adjacenttiles.add(t);
+            }
+            else{
+                if(tmpcoord.getx()==(x-1)&&tmpcoord.gety()==y) adjacenttiles.add(t);                
+            }
+                       
         }
-        for(Corner c : cornerlist){
-            if(adjacentcornercoords.contains(c.getCoords())==true) adjacentcorners.add(c);
-        }
+        int i;
+        for(Corner c: cornerlist){
+            tmpcoord = c.getCoords();
+            if(x%2==y%2){
+                i = ((x+y)/2)-2;
+                if(tmpcoord.getx()==(x-1)&&tmpcoord.gety()==i) adjacentcorners.add(c);
+                if(tmpcoord.getx()==(x)&&tmpcoord.gety()==i) adjacentcorners.add(c);
+                if(tmpcoord.getx()==(x)&&tmpcoord.gety()==(i+1)) adjacentcorners.add(c); 
+            }
+            else{
+                i = ((x+y)/2)-1;                
+                if(tmpcoord.getx()==(x)&&tmpcoord.gety()==i) adjacentcorners.add(c);
+                if(tmpcoord.getx()==(x-1)&&tmpcoord.gety()==(i)) adjacentcorners.add(c);
+                if(tmpcoord.getx()==(x-1)&&tmpcoord.gety()==(i-1)) adjacentcorners.add(c); 
+            }
+           
+        }        
+        
+        //adjacent corners
+        int i = ((y+2)*2)-x;
+        for(Corner c: cornerlist){
+            tmpcoord = c.getCoords();
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==i) adjacenttiles.add(t);
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==(i-1)) adjacenttiles.add(t);
+            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==(i-2)) adjacenttiles.add(t);            
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==i) adjacenttiles.add(t);           
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==(i-1)) adjacenttiles.add(t);                       
+            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==(i-2)) adjacenttiles.add(t); 
+        }        
     }
     
     public Coordinate getCoords(){
