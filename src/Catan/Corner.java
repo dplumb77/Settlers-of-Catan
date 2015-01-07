@@ -11,11 +11,7 @@ import java.util.List;
  */
 public class Corner {
     
-    private int x;
-    private int y;
     private Coordinate coords;
-    private List<Coordinate> adjacentcornercoords = new ArrayList<>();
-    private List<Coordinate> adjacenttilecoords = new ArrayList<>();
     private List<Tile> adjacenttiles = new ArrayList<>();
     private List<Corner> adjacentcorners = new ArrayList<>();
     private Settlement settlement;
@@ -25,15 +21,26 @@ public class Corner {
     boolean drawnSettlement;
     
     
-    public Corner(Coordinate coordinates, ArrayList<Coordinate> validtiles, ArrayList<Coordinate> validcorners){
+    public Corner(Coordinate coordinates){
         coords = coordinates;
-        x = coords.getx();
-        y = coords.gety();
         settlement = Settlement.NONE;
+        port = Port.NONE;
     }
     
-    public void filladjacents(ArrayList<Tile> tilelist, ArrayList<Corner> cornerlist){
-        //adjacent tiles
+    
+    /*
+        Adjacent stuff methods:
+            void fillAdjacents(ArrayList<Tile> tilelist, ArrayList<Corner> cornerlist)
+                -called once during board creation to fill adjacent tiles/corners with tile/corner objects
+                -maybe need to add edges too
+            boolean isAdjacent(Corner c)
+    */
+    
+    public void fillAdjacents(ArrayList<Tile> tilelist, ArrayList<Corner> cornerlist){
+        int x = coords.getx();
+        int y = coords.gety();
+        
+        //tiles
         Coordinate tmpcoord;
         for(Tile t: tilelist){
             tmpcoord = t.getCoords();
@@ -47,6 +54,8 @@ public class Corner {
             }
                        
         }
+        
+        //corners
         int i;
         for(Corner c: cornerlist){
             tmpcoord = c.getCoords();
@@ -61,79 +70,71 @@ public class Corner {
                 if(tmpcoord.getx()==(x)&&tmpcoord.gety()==i) adjacentcorners.add(c);
                 if(tmpcoord.getx()==(x-1)&&tmpcoord.gety()==(i)) adjacentcorners.add(c);
                 if(tmpcoord.getx()==(x-1)&&tmpcoord.gety()==(i-1)) adjacentcorners.add(c); 
-            }
-           
-        }        
-        
-        //adjacent corners
-        int i = ((y+2)*2)-x;
-        for(Corner c: cornerlist){
-            tmpcoord = c.getCoords();
-            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==i) adjacenttiles.add(t);
-            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==(i-1)) adjacenttiles.add(t);
-            if(tmpcoord.getx()==(x)&&tmpcoord.gety()==(i-2)) adjacenttiles.add(t);            
-            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==i) adjacenttiles.add(t);           
-            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==(i-1)) adjacenttiles.add(t);                       
-            if(tmpcoord.getx()==(x+1)&&tmpcoord.gety()==(i-2)) adjacenttiles.add(t); 
-        }        
-    }
-    
-    public Coordinate getCoords(){
-        return coords;
-    }
-    
-    public List<Corner> getAdjacentCorners(){
-        return adjacentcorners;
-    }
-    
-    public List<Tile> getAdjacenttiles(){
-        return adjacenttiles;
-    }
-    
-    public Settlement getSettlement(){
-        return settlement;
+            }          
+        }                
     }
     
     public boolean isAdjacent(Corner c){
         if(adjacentcorners.contains(c) == true) return true;
         return false;
     }
+
     
-    public Port getPort(){
-        return port;
-    }
-    
-    public Player getOwner(){
-        return owner;
-    }
-    
-    public void setOwner(Player p){
-        owner = p;
-    }
+    /*
+        Settlement methods:
+            boolean canPlaceSettlement(Player p)
+            boolean canPlaceFreeSettlement(Player p)
+                -like canPlaceSettlement() but doesnt check for connecting roads
+                -only called during start phase
+            void placeSettlement(Settlement s, Player p)
+                -sets owner and settlement type
+                -can be used to place small or large settlements
+                -also adds port to players portlist
+    */
     
     public boolean canPlaceSettlement(Player p){
         
-        //if the owner field is filled then there is already a settlement there, idk how to do that
-        //if(this.getOwner()!=false) return false;
-        
-        //if there is a settlement within two tiles then the tile is not settleable
+        //if there is a settlement on this corner or any adjacent corners return false
+        if(settlement!= Settlement.NONE) return false;
         for(Corner c : adjacentcorners){
-            for(Corner corner : c.adjacentcorners){
-                if(corner.getSettlement()!=Settlement.NONE) return false;
-            }
+                if(c.getSettlement()!=Settlement.NONE) return false;
         }
         
-        //if there is a road leading to the corner owned by the player then it is settleable
+        //if there is a road leading to the corner owned by the player return true
         for(Edge e : roads){
             if(e.getOwner()==p) return true;
         }        
         return false;
     }
     
-    public void createSettlement(Settlement s, Player p){
+    public boolean canPlaceFreeSettlement(){
+        
+        //if there is a settlement on this corner or any adjacent corners return false
+        if(settlement!= Settlement.NONE) return false;
+        for(Corner c : adjacentcorners){
+                if(c.getSettlement()!=Settlement.NONE) return false;
+        }       
+        return true;
+    }
+
+    public void placeSettlement(Settlement s, Player p){
         owner = p;
         settlement = s;
+        if(port!=Port.NONE) p.addPort(port);
+    }    
+
+    
+    /*
+        void freePayout()
+            -only called during start phase to give player its starting resources
+    */
+    
+    public void freePayout(){
+        for(Tile t: adjacenttiles){
+            owner.addResource(t.getResource(), 1);
+        }
     }
+    
     
     public boolean getDrawnSettlement() {
         return drawnSettlement;
@@ -142,13 +143,42 @@ public class Corner {
     public void setDrawnSettlement(boolean b) {
         drawnSettlement = b;
     }
+    public Coordinate getCoords(){
+        return coords;
+    }
     
-    public List<Corner> getAdjacentcorners() {
+    public List<Corner> getAdjacentCorners(){
         return adjacentcorners;
     }
     
-}
+    public List<Tile> getAdjacentTiles(){
+        return adjacenttiles;
+    }
     
+    public Settlement getSettlement(){
+        return settlement;
+    }
+
+    public Port getPort(){
+        return port;
+    }
+    
+    public void setPort(Port p){
+        port = p;
+    }
+    
+    public Player getOwner(){
+        return owner;
+    }
+    
+    public List<Edge> getRoads(){
+        return roads;
+    }
+    
+    public void addRoad(Edge e){
+        roads.add(e);
+    }
+}    
 
 
       

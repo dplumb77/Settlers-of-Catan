@@ -70,11 +70,15 @@ public class Player {
 
     /*
         Resource methods:
-            void addResource(Resource r, int i) - adds given resource to player's resource hand.
-            void removeResource(Resource r, int i) - removes given resource from player's resource hand.
-            void getTotalResourceCount() - returns size of player's resource hand.
-            Resource takeRandomResource() - removes and returns a random resource from player's hand.
-            ~getters for each resource type
+            void addResource(Resource r, int i) 
+                - adds given resource to player's resource hand.
+            void removeResource(Resource r, int i) 
+                - removes given resource from player's resource hand.
+            int getTotalResourceCount() 
+                - returns size of player's resource hand.
+            Resource takeRandomResource() 
+                - removes and returns a random resource from player's hand.
+            -getters for each resource type
     */    
     
     public void addResource(Resource r, int i){
@@ -95,7 +99,7 @@ public class Player {
             }
         }
     }
-    
+
     public int getTotalResourceCount(){
         return resourcehand.size();
     }
@@ -117,6 +121,14 @@ public class Player {
     tmp= resourcehand.get(0);
     resourcehand.remove(0);
     return tmp;
+    }
+
+    public int getResource(Resource r){
+        int i = 0;
+        for(Resource resource: resourcehand){
+            if(resource==r) i++;
+        }
+        return i;
     }
     
     public int getRocks(){
@@ -163,12 +175,15 @@ public class Player {
     
     /*
         Settlement methods:
-            void makeSmallSettlement() - removes required resources from player's resource hand and adjusts remaining settlemnt counts for a small settlement.
-            void makeLargeSettlement() - removes required resources from player's resource hand and adjusts remaining settlemnt counts for a large settlement.
-            int getSmallSettlementCount() - returns player's small settlement count.
-            int getLargeSettlementCount() - returns player's large settlement count.
-            boolean canMakeSmallSettlement() - returns whether or not the player can make a small settlement.
-            boolean canMakeLargeSettlement() - returns whether or not the player can make a large settlement.
+            void makeSmallSettlement() 
+                -removes required resources from player's resource hand and adjusts remaining settlemnt counts for a small settlement.
+            void makeLargeSettlement() 
+                - removes required resources from player's resource hand and adjusts remaining settlemnt counts for a large settlement.
+            int getSmallSettlementCount() 
+            int getLargeSettlementCount() 
+            boolean canMakeSmallSettlement()
+            boolean canMakeLargeSettlement()
+                - both check resource hand for required resources
     */      
      
     public void makeSmallSettlement(){
@@ -210,11 +225,13 @@ public class Player {
     
     /*
     Road methods:
-        void setHasLongestRoad(boolean b) - sets whether or not the player has the longest road.
-        void makeRoad() - removes required resources from player's resource hand and decrements remaining roads.
-        boolean canMakeRoad() - returns whether or not the player has required resources and remaining roads to build a road.
-        int getRoadCount() - returns length of player's longest road.
-        void setRoadCount(int i) - sets length of player's longest road.
+        void setHasLongestRoad(boolean b) 
+        void makeRoad() 
+            - removes required resources from player's resource hand and decrements remaining roads.
+        boolean canMakeRoad()
+            - checks resource hand for required resources
+        int getRoadCount()
+        void setRoadCount(int i)
     */
     
     public void setHasLongestRoad(boolean b){
@@ -243,9 +260,9 @@ public class Player {
     
     /*   
     Army methods:
-        void addArmy(int i) - adds armies to the player's army count.
-        void setHasLargestArmy(boolean b) - changes haslargestarmy field.
-        int getArmyCount() - returns the player's army count 
+        void addArmy(int i)
+        void setHasLargestArmy(boolean b)
+        int getArmyCount()
     */
 
     public void addArmy(int i){
@@ -265,9 +282,11 @@ public class Player {
     
     /*   
     DC methods:
-        void makeDC(DC dc) - takes resources out of player's resource hand and adds a DC to the player's DC hand and increments vpcount if it is a VP card.
-        List<DC> getDCHand() - returns a list of all the player's DCs.
-        boolean canMakeDC() - returns whether or not the player has the required resources to make a DC.
+        void makeDC(DC dc) 
+            - takes resources out of player's resource hand and adds a DC to the player's DC hand and increments vpcount if it is a VP card.
+        List<DC> getDCHand()
+        boolean canMakeDC()
+            - checks resource hand for required resources
     */
     
     public void makeDC(DC dc){
@@ -287,6 +306,14 @@ public class Player {
     public boolean canMakeDC(){
         if(this.getSheep()>0 && this.getWheat() >0 && this.getRocks()>0) return true;
         return false;
-    }   
+    }
+    
+    public ArrayList<Port> getPorts(){
+        return portlist;                
+    }
+    
+    public void addPort(Port p){
+        portlist.add(p);
+    }
     
 }
